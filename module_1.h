@@ -414,7 +414,7 @@ long exe( Statement* st, std::map<str_t, Func>& func, bool& IsReturn, str_t& lin
 		std::ifstream fin( "______ret" );
 		fin >> str;
 		fin.close( );
-		system( "pause" );
+		//system( "pause" );
 		system( ( remove_file_command + " ______check_sat_file" ).c_str( ) );
 		system( ( remove_file_command + " ______ret" ).c_str( ) );
 		std::cout << str << std::endl;
@@ -471,7 +471,7 @@ long exe( Statement* st, std::map<str_t, Func>& func, bool& IsReturn, str_t& lin
 		}
 
 		fin.close( );
-		system( "pause" );
+		//system( "pause" );
 		system( ( remove_file_command + " ______check_sat_and_get_model_file" ).c_str( ) );
 		system( ( remove_file_command + " ______ret" ).c_str( ) );
 
