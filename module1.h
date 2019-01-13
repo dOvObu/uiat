@@ -8,15 +8,15 @@
 
 std::map<str_t, unsigned> recursionCounter;
 
-// Майнит  выражения из строки и странного дерева
+// РњР°Р№РЅРёС‚  РІС‹СЂР°Р¶РµРЅРёСЏ РёР· СЃС‚СЂРѕРєРё Рё СЃС‚СЂР°РЅРЅРѕРіРѕ РґРµСЂРµРІР°
 pExpr anal(
-	str_t&& str,								// анализируемая строка
-	vec_vec_str_t& tr,						// странное дерево
-	vec_pAssign* all_ids,					// имена всех аргументов
-	vec_pair_pExpr_vecpExpr& ret_expr,	// варианты возвращаемых значений
-	vec_pExpr& pi_expr	/*					// текущие условия */ )
+	str_t&& str,								// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
+	vec_vec_str_t& tr,						// СЃС‚СЂР°РЅРЅРѕРµ РґРµСЂРµРІРѕ
+	vec_pAssign* all_ids,					// РёРјРµРЅР° РІСЃРµС… Р°СЂРіСѓРјРµРЅС‚РѕРІ
+	vec_pair_pExpr_vecpExpr& ret_expr,	// РІР°СЂРёР°РЅС‚С‹ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… Р·РЅР°С‡РµРЅРёР№
+	vec_pExpr& pi_expr	/*					// С‚РµРєСѓС‰РёРµ СѓСЃР»РѕРІРёСЏ */ )
 {
-	// Бинарные сравнения
+	// Р‘РёРЅР°СЂРЅС‹Рµ СЃСЂР°РІРЅРµРЅРёСЏ
 	{
 		str_size_t lessOrEqPos = str.find( "<=" );
 		str_size_t moreOrEqPos = str.find( ">=" );
@@ -80,7 +80,7 @@ pExpr anal(
 	str_t k = "&|";
 	str_rev_it key = std::find_first_of( std::rbegin( str ), std::rend( str ), std::begin( k ), std::end( k ) );
 
-	// Бинарыне арифмитические и предикатные
+	// Р‘РёРЅР°СЂС‹РЅРµ Р°СЂРёС„РјРёС‚РёС‡РµСЃРєРёРµ Рё РїСЂРµРґРёРєР°С‚РЅС‹Рµ
 	{
 		if ( key != std::rend( str ) )
 		{
@@ -155,7 +155,7 @@ pExpr anal(
 		}
 	}
 
-	// Унарные операции
+	// РЈРЅР°СЂРЅС‹Рµ РѕРїРµСЂР°С†РёРё
 	{
 		if ( str[0] == '-' )
 		{
@@ -174,10 +174,10 @@ pExpr anal(
 		}
 	}
 
-	// Перевод странного дерева в вызов функции
-	// и вызов полных значений переменных
+	// РџРµСЂРµРІРѕРґ СЃС‚СЂР°РЅРЅРѕРіРѕ РґРµСЂРµРІР° РІ РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё
+	// Рё РІС‹Р·РѕРІ РїРѕР»РЅС‹С… Р·РЅР°С‡РµРЅРёР№ РїРµСЂРµРјРµРЅРЅС‹С…
 	{
-		// сохранение числа в дерево
+		// СЃРѕС…СЂР°РЅРµРЅРёРµ С‡РёСЃР»Р° РІ РґРµСЂРµРІРѕ
 		if ( lexIsDigit( *std::begin( str ) ) )
 		{
 			N* expr;
@@ -187,7 +187,7 @@ pExpr anal(
 			//std::cout << expr->num << std::endl;
 			return sh;
 		}
-		// сохранение вызова функции в дерево
+		// СЃРѕС…СЂР°РЅРµРЅРёРµ РІС‹Р·РѕРІР° С„СѓРЅРєС†РёРё РІ РґРµСЂРµРІРѕ
 		else if ( std::find( std::begin( str ), std::end( str ), '[' ) != std::end( str ) )
 		{
 			Call* expr;
@@ -195,7 +195,7 @@ pExpr anal(
 			lexParse( str.substr( 0, str.find( '[' ) ), expr->nameOfFunc );
 			//std::cout << "Call: " << expr->nameOfFunc << "(...)" << std::endl;
 
-			// добавление условий срабатывания вызова функции
+			// РґРѕР±Р°РІР»РµРЅРёРµ СѓСЃР»РѕРІРёР№ СЃСЂР°Р±Р°С‚С‹РІР°РЅРёСЏ РІС‹Р·РѕРІР° С„СѓРЅРєС†РёРё
 			for ( auto& it : pi_expr ) {
 				expr->pi_expr.push_back( it );
 			}
@@ -235,7 +235,7 @@ pExpr anal(
 			auto jt = std::find( it + 1, str.end( ), '#' );
 			while ( it != str.end( ) ) {
 
-				// добавление значений аргументов для вызова функции
+				// РґРѕР±Р°РІР»РµРЅРёРµ Р·РЅР°С‡РµРЅРёР№ Р°СЂРіСѓРјРµРЅС‚РѕРІ РґР»СЏ РІС‹Р·РѕРІР° С„СѓРЅРєС†РёРё
 				expr->args.push_back( anal( std::string( it, jt + 1 ), tr, all_ids, ret_expr, pi_expr ) );
 				//
 
@@ -258,7 +258,7 @@ pExpr anal(
 
 			return sh;
 		}
-		// сохранение скобок в дерево
+		// СЃРѕС…СЂР°РЅРµРЅРёРµ СЃРєРѕР±РѕРє РІ РґРµСЂРµРІРѕ
 		else if ( std::find( std::begin( str ), std::end( str ), '#' ) != std::end( str ) )
 		{
 			Brackets* expr;
@@ -280,7 +280,7 @@ pExpr anal(
 
 			return sh;
 		}
-		// сохранение переменных в дерево
+		// СЃРѕС…СЂР°РЅРµРЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С… РІ РґРµСЂРµРІРѕ
 		else
 		{
 			str_t name( std::begin( str ), std::end( str ) );
@@ -297,40 +297,40 @@ pExpr anal(
 				p_var->nameOfVar = name;
 
 				// p_var->phi.first;				~ PhiFunc	pExpr
-				// p_var->phi.second.first;	~ X[n-1]		pExpr если PhiFunc=False
-				// p_var->phi.second.second;	~ X[n]		pExpr если PhiFunc=True
+				// p_var->phi.second.first;	~ X[n-1]		pExpr РµСЃР»Рё PhiFunc=False
+				// p_var->phi.second.second;	~ X[n]		pExpr РµСЃР»Рё PhiFunc=True
 				// p_var->rank;					~ n			unsigned
 
 				if ( name == "a2" ) {
 					system("echo kek");
 				}
 
-				if ( these_assign.if_expr.empty( ) )// тут;a:=1;if{a:=a+1;}
+				if ( these_assign.if_expr.empty( ) )// С‚СѓС‚;a:=1;if{a:=a+1;}
 				{
-					// если такая переменная ни разу не инициализировалась
-					if ( all_ids != nullptr ) // если есть аргументы
+					// РµСЃР»Рё С‚Р°РєР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ РЅРё СЂР°Р·Сѓ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°Р»Р°СЃСЊ
+					if ( all_ids != nullptr ) // РµСЃР»Рё РµСЃС‚СЊ Р°СЂРіСѓРјРµРЅС‚С‹
 					{
 						bool allright = false;
 						pAssign argAssign = nullptr;
-						for ( pAssign& it : *all_ids ) // и одним из этих аргументов является рассматриваемая переменная
+						for ( pAssign& it : *all_ids ) // Рё РѕРґРЅРёРј РёР· СЌС‚РёС… Р°СЂРіСѓРјРµРЅС‚РѕРІ СЏРІР»СЏРµС‚СЃСЏ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРјР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
 						{
 							if ( name == it->name )
 							{
 								argAssign = it;
-								allright = true; // то всё хорошо
+								allright = true; // С‚Рѕ РІСЃС‘ С…РѕСЂРѕС€Рѕ
 								break;
 							}
 						}
 						check( allright, ( "ERROR::Asking_for_(" + name + ")_variable_without_initializing" ).c_str( ) );
 						Var* p_argument;
-						pExpr sh( p_argument = new Var( ) ); // мы сохраняем эту переменную в дерево
+						pExpr sh( p_argument = new Var( ) ); // РјС‹ СЃРѕС…СЂР°РЅСЏРµРј СЌС‚Сѓ РїРµСЂРµРјРµРЅРЅСѓСЋ РІ РґРµСЂРµРІРѕ
 						p_argument->nameOfVar = name;
-						p_argument->withConditionFunc = false; // устанавливая, что пока что никаких условных функций для неё - нет,
-						p_argument->argData = argAssign; // а её значение целиком и полностью зависит от значения аргумента
-						// p_argument->argData->active; Если аргумент будет не активен
-						// p_argument->argData->meaning; то его значение будет пустым
-						// Иначе (при вызове, рекурсивном или нет), мы сюда не сможем попасть,
-						//		т.к. к таким аргументам уже будет добавляться информация о условиях (есть они, или их нет)
+						p_argument->withConditionFunc = false; // СѓСЃС‚Р°РЅР°РІР»РёРІР°СЏ, С‡С‚Рѕ РїРѕРєР° С‡С‚Рѕ РЅРёРєР°РєРёС… СѓСЃР»РѕРІРЅС‹С… С„СѓРЅРєС†РёР№ РґР»СЏ РЅРµС‘ - РЅРµС‚,
+						p_argument->argData = argAssign; // Р° РµС‘ Р·РЅР°С‡РµРЅРёРµ С†РµР»РёРєРѕРј Рё РїРѕР»РЅРѕСЃС‚СЊСЋ Р·Р°РІРёСЃРёС‚ РѕС‚ Р·РЅР°С‡РµРЅРёСЏ Р°СЂРіСѓРјРµРЅС‚Р°
+						// p_argument->argData->active; Р•СЃР»Рё Р°СЂРіСѓРјРµРЅС‚ Р±СѓРґРµС‚ РЅРµ Р°РєС‚РёРІРµРЅ
+						// p_argument->argData->meaning; С‚Рѕ РµРіРѕ Р·РЅР°С‡РµРЅРёРµ Р±СѓРґРµС‚ РїСѓСЃС‚С‹Рј
+						// РРЅР°С‡Рµ (РїСЂРё РІС‹Р·РѕРІРµ, СЂРµРєСѓСЂСЃРёРІРЅРѕРј РёР»Рё РЅРµС‚), РјС‹ СЃСЋРґР° РЅРµ СЃРјРѕР¶РµРј РїРѕРїР°СЃС‚СЊ,
+						//		С‚.Рє. Рє С‚Р°РєРёРј Р°СЂРіСѓРјРµРЅС‚Р°Рј СѓР¶Рµ Р±СѓРґРµС‚ РґРѕР±Р°РІР»СЏС‚СЊСЃСЏ РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ СѓСЃР»РѕРІРёСЏС… (РµСЃС‚СЊ РѕРЅРё, РёР»Рё РёС… РЅРµС‚)
 						return sh;
 					}//*/
 
@@ -363,15 +363,15 @@ pExpr anal(
 
 				if ( p_var->withConditionFunc )
 				{
-					// Находим n для X[n], т.е. these_assign->meaning[n]
+					// РќР°С…РѕРґРёРј n РґР»СЏ X[n], С‚.Рµ. these_assign->meaning[n]
 					unsigned n = getNforXn( these_assign.core.get(), pi_expr );
-					// Записываем функции ф1, ф2, ф3, ф4 ...
+					// Р—Р°РїРёСЃС‹РІР°РµРј С„СѓРЅРєС†РёРё С„1, С„2, С„3, С„4 ...
 					std::vector<vec_pExpr> phi;
 					getVecOfPhiFuncs( n, these_assign.core.get(), phi );
-					// Записываем значения X[n], X[n+1], X[n+2], X[n+3], X[n+4] ...
+					// Р—Р°РїРёСЃС‹РІР°РµРј Р·РЅР°С‡РµРЅРёСЏ X[n], X[n+1], X[n+2], X[n+3], X[n+4] ...
 					vec_pExpr X;
 					getVecOfXes( n, these_assign.core.get(), X );
-					// Собираем функцию выбора значения фn-1(...ф4(ф3(ф2(ф1(X[n],X[n+1]),X[n+2]),X[n+3]),X[n+4])...,X[n+(n-1)]);
+					// РЎРѕР±РёСЂР°РµРј С„СѓРЅРєС†РёСЋ РІС‹Р±РѕСЂР° Р·РЅР°С‡РµРЅРёСЏ С„n-1(...С„4(С„3(С„2(С„1(X[n],X[n+1]),X[n+2]),X[n+3]),X[n+4])...,X[n+(n-1)]);
 					p_var->conditionFunc = fillConditionFunc( phi, X );
 				}
 
@@ -380,33 +380,33 @@ pExpr anal(
 
 				return sh;
 			}
-			else if ( all_id_of_curr_Func != nullptr ) // если такая переменная ни разу не инициализировалась
+			else if ( all_id_of_curr_Func != nullptr ) // РµСЃР»Рё С‚Р°РєР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ РЅРё СЂР°Р·Сѓ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°Р»Р°СЃСЊ
 			{
-				// если такая переменная ни разу не инициализировалась
-				if ( all_ids != nullptr ) // если есть аргументы
+				// РµСЃР»Рё С‚Р°РєР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ РЅРё СЂР°Р·Сѓ РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°Р»Р°СЃСЊ
+				if ( all_ids != nullptr ) // РµСЃР»Рё РµСЃС‚СЊ Р°СЂРіСѓРјРµРЅС‚С‹
 				{
 					bool allright = false;
 					pAssign argAssign = nullptr;
-					for ( pAssign& it : *all_ids ) // и одним из этих аргументов является рассматриваемая переменная
+					for ( pAssign& it : *all_ids ) // Рё РѕРґРЅРёРј РёР· СЌС‚РёС… Р°СЂРіСѓРјРµРЅС‚РѕРІ СЏРІР»СЏРµС‚СЃСЏ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРјР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
 					{
 						//std::cout << it->name << std::endl;
 						if ( name == it->name )
 						{
 							argAssign = it;
-							allright = true; // то всё хорошо
+							allright = true; // С‚Рѕ РІСЃС‘ С…РѕСЂРѕС€Рѕ
 							break;
 						}
 					}
 					check( allright, ( "ERROR::Asking_for_(" + name + ")_variable_without_initializing" ).c_str( ) );
 					Var* p_argument;
-					pExpr sh( p_argument = new Var( ) ); // мы сохраняем эту переменную в дерево
+					pExpr sh( p_argument = new Var( ) ); // РјС‹ СЃРѕС…СЂР°РЅСЏРµРј СЌС‚Сѓ РїРµСЂРµРјРµРЅРЅСѓСЋ РІ РґРµСЂРµРІРѕ
 					p_argument->nameOfVar = name;
-					p_argument->withConditionFunc = false; // устанавливая, что пока что никаких условных функций для неё - нет,
-					p_argument->argData = argAssign; // а её значение целиком и полностью зависит от значения аргумента
-					// p_argument->argData->active; Если аргумент будет не активен
-					// p_argument->argData->meaning; то его значение будет пустым
-					// Иначе (при вызове, рекурсивном или нет), мы сюда не сможем попасть,
-					//		т.к. к таким аргументам уже будет добавляться информация о условиях (есть они, или их нет)
+					p_argument->withConditionFunc = false; // СѓСЃС‚Р°РЅР°РІР»РёРІР°СЏ, С‡С‚Рѕ РїРѕРєР° С‡С‚Рѕ РЅРёРєР°РєРёС… СѓСЃР»РѕРІРЅС‹С… С„СѓРЅРєС†РёР№ РґР»СЏ РЅРµС‘ - РЅРµС‚,
+					p_argument->argData = argAssign; // Р° РµС‘ Р·РЅР°С‡РµРЅРёРµ С†РµР»РёРєРѕРј Рё РїРѕР»РЅРѕСЃС‚СЊСЋ Р·Р°РІРёСЃРёС‚ РѕС‚ Р·РЅР°С‡РµРЅРёСЏ Р°СЂРіСѓРјРµРЅС‚Р°
+					// p_argument->argData->active; Р•СЃР»Рё Р°СЂРіСѓРјРµРЅС‚ Р±СѓРґРµС‚ РЅРµ Р°РєС‚РёРІРµРЅ
+					// p_argument->argData->meaning; С‚Рѕ РµРіРѕ Р·РЅР°С‡РµРЅРёРµ Р±СѓРґРµС‚ РїСѓСЃС‚С‹Рј
+					// РРЅР°С‡Рµ (РїСЂРё РІС‹Р·РѕРІРµ, СЂРµРєСѓСЂСЃРёРІРЅРѕРј РёР»Рё РЅРµС‚), РјС‹ СЃСЋРґР° РЅРµ СЃРјРѕР¶РµРј РїРѕРїР°СЃС‚СЊ,
+					//		С‚.Рє. Рє С‚Р°РєРёРј Р°СЂРіСѓРјРµРЅС‚Р°Рј СѓР¶Рµ Р±СѓРґРµС‚ РґРѕР±Р°РІР»СЏС‚СЊСЃСЏ РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ СѓСЃР»РѕРІРёСЏС… (РµСЃС‚СЊ РѕРЅРё, РёР»Рё РёС… РЅРµС‚)
 					return sh;
 				}//*/
 			}
@@ -857,16 +857,16 @@ void lexReplaseChByStr( str_t& str, char ch, str_t&& str2 )
 }
 
 
-// Майнит из строки утверждения
+// РњР°Р№РЅРёС‚ РёР· СЃС‚СЂРѕРєРё СѓС‚РІРµСЂР¶РґРµРЅРёСЏ
 pExpr lexAnalise(
-	str_t str,									// анализируемая строка
-	vec_pAssign* all_ids,					// имена всех аргументов
-	vec_pair_pExpr_vecpExpr& ret_expr,	// варианты возвращаемых значений
-	vec_pExpr& pi_expr	/*					// текущие значения */ )
+	str_t str,									// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
+	vec_pAssign* all_ids,					// РёРјРµРЅР° РІСЃРµС… Р°СЂРіСѓРјРµРЅС‚РѕРІ
+	vec_pair_pExpr_vecpExpr& ret_expr,	// РІР°СЂРёР°РЅС‚С‹ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… Р·РЅР°С‡РµРЅРёР№
+	vec_pExpr& pi_expr	/*					// С‚РµРєСѓС‰РёРµ Р·РЅР°С‡РµРЅРёСЏ */ )
 {
 
-	// Семь бед -
-	// один ответ:
+	// РЎРµРјСЊ Р±РµРґ -
+	// РѕРґРёРЅ РѕС‚РІРµС‚:
 	vec_vec_str_t tr;
 	lexRemoveIf(
 				str,
@@ -874,7 +874,7 @@ pExpr lexAnalise(
 				std::end( str ),
 				[]( auto& it ) { return it == ' '; } );
 
-	str = "(0)+(" + str + ")+(0)";// КОСТЫЛЬ и ВЕЛОСИПЕД!
+	str = "(0)+(" + str + ")+(0)";// РљРћРЎРўР«Р›Р¬ Рё Р’Р•Р›РћРЎРРџР•Р”!
 	lexCangeBracketsOfFunctions( str, '[', ']' );
 	lexReplaseChByStr( str, '[', "[(" );
 	lexReplaseChByStr( str, ']', ")]" );
@@ -885,7 +885,7 @@ pExpr lexAnalise(
 }
 
 
-// превращает строку в странное дерево с решётками
+// РїСЂРµРІСЂР°С‰Р°РµС‚ СЃС‚СЂРѕРєСѓ РІ СЃС‚СЂР°РЅРЅРѕРµ РґРµСЂРµРІРѕ СЃ СЂРµС€С‘С‚РєР°РјРё
 void lexStringWithBracketsToStrangeTree( str_t& str, vec_vec_str_t& tr )
 {
 	while ( str.find( '(' ) != str_t::npos ) {
@@ -945,7 +945,7 @@ void lexStringWithBracketsToStrangeTree( str_t& str, vec_vec_str_t& tr )
 	tr.back( ).push_back( str );
 }
 
-// удаляет два нуля из финального варианта выражения
+// СѓРґР°Р»СЏРµС‚ РґРІР° РЅСѓР»СЏ РёР· С„РёРЅР°Р»СЊРЅРѕРіРѕ РІР°СЂРёР°РЅС‚Р° РІС‹СЂР°Р¶РµРЅРёСЏ
 pExpr deleteZeros( pExpr expr ) {
 	return ( (Brackets*)( ( (Plus*)( ( (Plus*)expr.get( ) )->left.get( ) ) )->right.get( ) ) )->expresson;
 }
