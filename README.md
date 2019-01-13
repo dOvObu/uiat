@@ -3,7 +3,7 @@ unforecasted intervolute alamo tree
 is a little simple interpreter that was made for learning perpouses.
 <img src="https://freerangestock.com/sample/26373/old-tree.jpg" style="width: 15%; height: 15%" alt="old alamo tree">
 
-### dependencies
+## dependencies
 ```
 https://github.com/Z3Prover/z3
 ```
