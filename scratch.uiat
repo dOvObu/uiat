@@ -67,6 +67,15 @@ Func ariphmetic( a )
 	}
 }
 
+Func gap( a )
+{
+	if ( a < 0 ) then {
+		assert(a > 0);
+	}
+	if ( a > 0 ) then {
+		assert(a < 0);
+	}
+}
 
 Func demorgan( x, y )
 {
@@ -85,6 +94,7 @@ Func firstSlide(circle, rectangle, triangle)
 Func main(  )
 {
 	check( demorgan );
+	show_model( gap );
 	check( разница );
 	show_model( разница );
 	check( foo );
