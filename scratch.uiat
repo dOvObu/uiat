@@ -1,5 +1,24 @@
-#include "z3"
+# This line may contain path and command to execute z3. By default it uses -> "z3" <- this. Feel free to add comments around it.
 
+# By default, entrypoint is here, in main function
+Func main(  )
+{
+	show_model( contro );
+	show_model( ariph );
+	check( demorgan );
+	check( разница );
+	show_model( разница );
+	check( foo );
+	show_model( firstSlide );
+
+	print{
+		;"факториал: " factorial(3);
+		"somebody once told me";
+		"the world is gonna roll me";
+		"ай эйнт шарпест тул ин зэ шэээд";
+		"pow(2, 10) ~ " pow(2, 10);
+	};
+}
 
 Func factorial( n )
 {
@@ -67,7 +86,14 @@ Func ariphmetic( a )
 	}
 }
 
-Func gap( a )
+Func ariph( a )
+{
+	assert( a > 3 );
+	a := ariphmetic( a );
+	assert( a < 11 );
+}
+
+Func contro( a )
 {
 	if ( a < 0 ) then {
 		assert(a > 0);
@@ -76,6 +102,7 @@ Func gap( a )
 		assert(a < 0);
 	}
 }
+
 
 Func demorgan( x, y )
 {
@@ -91,23 +118,6 @@ Func firstSlide(circle, rectangle, triangle)
 	};
 }
 
-Func main(  )
-{
-	check( demorgan );
-	show_model( gap );
-	check( разница );
-	show_model( разница );
-	check( foo );
-	show_model( firstSlide );
-
-	print{
-		;"факториал: " factorial(3);
-		"somebody once told me";
-		"the world is gonna roll me";
-		"ай эйнт шарпест тул ин зэ шэээд";
-		"pow(2, 10) ~ " pow(2, 10);
-	};
-}
 
 Func foo( arg1, arg2 )
 {
