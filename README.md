@@ -10,4 +10,4 @@ https://github.com/Z3Prover/z3
 https://cloud.mail.ru/public/Fuuf/KqWdbC5C5
 
 # uiat syntax
-https://cloclo20.datacloudmail.ru/view/uiat/syntax.png?etag=22C38C2CF1353DF0CF231372CA33B15D658FED0F&x-email=c0_0b%40mail.ru
+<img src="https://pp.userapi.com/c849028/v849028082/104513/3tdTIcseo7E.jpg" alt="syntax of uiat">
