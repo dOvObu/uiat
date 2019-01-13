@@ -410,7 +410,7 @@ long exe( Statement* st, std::map<str_t, Func>& func, bool& IsReturn, str_t& lin
 		std::ofstream fout( "______check_sat_file" , std::ios::trunc );
 		fout << str;
 		fout.close( );
-		system( "z3 ______check_sat_file > ______ret" );
+		system( (z3_path + " ______check_sat_file > ______ret").c_str( ) );
 		std::ifstream fin( "______ret" );
 		fin >> str;
 		fin.close( );
@@ -440,7 +440,7 @@ long exe( Statement* st, std::map<str_t, Func>& func, bool& IsReturn, str_t& lin
 		fout << str;
 		fout.close( );
 		str.clear( );
-		system( "z3 ______check_sat_and_get_model_file > ______ret" );
+		system( (z3_path + " ______check_sat_and_get_model_file > ______ret").c_str( ) );
 		std::ifstream fin( "______ret" );
 		char buff[280];
 		bool first_line = true;
