@@ -23,7 +23,7 @@ const std::string remove_file_command( REMOVE_FILE );
 std::string z3_path = "z3";
 
 
-// Порядок объявления:
+// РџРѕСЂСЏРґРѕРє РѕР±СЉСЏРІР»РµРЅРёСЏ:
 void check( bool notShit, std::string&& logInfo );
 void otstup( int n );
 bool lexIsDigit( char c );
@@ -236,7 +236,7 @@ void lexRemoveIf( std::string& str, std::string::iterator&& begin, std::string::
 	str.erase( end - hmm, end );
 }
 
-// Шаблонные сокращения
+// РЁР°Р±Р»РѕРЅРЅС‹Рµ СЃРѕРєСЂР°С‰РµРЅРёСЏ
 template<typename... Booleans>
 inline void AND( bool& ret, Booleans&& ...vars )
 {
