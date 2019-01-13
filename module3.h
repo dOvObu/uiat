@@ -584,7 +584,7 @@ class PrintModel : public Statement
 {
 public:
 	std::string nameOfFunc;
-	unsigned evaluations = 900;
+	unsigned evaluations = 7;
 	PrintModel( ) { this->val = 'M'; }
 	~PrintModel( ) {}
 };
@@ -605,7 +605,7 @@ typedef std::vector<std::vector<std::string> > vec_vec_str_t;
 
 
 std::map<str_t, pCoreAssign> allAssignments;
-str_t marker = "_________жопа___";
+str_t marker = "___________жопа____"; // иди своей дорогой, сталкер
 
 
 void getLastMatch( std::map<str_t, unsigned>& lastMatch )
