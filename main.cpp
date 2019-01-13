@@ -1,115 +1,87 @@
-#include <string>
+#include <unordered_set>
 #include <iostream>
-#include <vector>
-#include <memory>
 #include <fstream>
+#include <string>
+#include <sstream>
+#include <memory>
+#include <vector>
+#include <algorithm>
+#include <map>
+#include "module_1.h"
+
+void loadCode( const char path[], std::string& line );
 
 
-
-class Print
+int main( int argc, char* argv[] )
 {
-public:
-	std::vector< std::shared_ptr<std::string> > arrayToPrint;
-};
+	setlocale( LC_ALL, "" );
+	system( "echo \"(^_^)\" > errorLog.txt" );
+	std::map< std::string, Func > func;
+	std::string line = "";
 
-
-
-bool lexNextIs(
-		const std::string& tartget,
-		std::string::size_type start,
-		std::string& str )
-{
-	auto end = str.substr( start+1, str.size()-start-1 ).find( tartget )+start;
-	if ( end == std::string::npos ) return false;
-
-	for ( auto i = start; i <= end; ++i ) {
-		if (str[i] == ';'){
-			return true;
-		}
-		if ( str[i] != ' ' && str[i] != '\n' && str[i] != '\t' ) {
-			return false;
+	std::string codePath = "scratch.uiat";
+	if ( argc > 1 ) {
+		if ( str_t( argv[1] ).find( ".uiat" ) != str_t::npos ) {
+			codePath = argv[1];
 		}
 	}
+	loadCode( codePath.c_str(), line );
+	elifToElseIf( line );
+	takeFuncDecls( line, func );
+	execFunc( "main", func, line );
 
-	return false;
+	system( "pause" );
+	return 0;
 }
 
 
 
-bool lexGetPrint(std::string& str, Print& pr)
+void loadCode( const char path[], std::string& line )
 {
-	auto begin = str.find("print ");
-
-	if ( begin == std::string::npos ) { begin = str.find("print("); }
-	if ( begin == std::string::npos ) { begin = str.find("print\t"); }
-	if ( begin == std::string::npos ) { begin = str.find("print\n"); }
-	if ( begin == std::string::npos ) { begin = str.find("print;"); }
-	if ( begin == std::string::npos ) { begin = str.find("print{"); }
-
-	bool body =
-		(str.find("{")!=std::string::npos) && (str.find("}")!=std::string::npos);
-
-	if ( begin != std::string::npos ) {
-
-		auto size = str.size(  );
-		std::string::size_type start = 0, end = size;
-		bool in_str = false;
-		int needNewLineOnNextStep = 0;
-
-		for ( std::string::size_type i = 0; i < size; ++i ) {
-
-			if ( str[i] == '\"' ) {
-				in_str = !in_str;
-
-				if ( in_str ) {
-					start = i;
-				} else {
-
-					end = i;
-
-					if ( pr.arrayToPrint.size() == 0 || needNewLineOnNextStep ) {
-
-						pr.arrayToPrint.push_back(
-								std::shared_ptr<std::string>(
-									new std::string(str.substr(start+1, end-start-1))));
-
-					} else {
-						(*pr.arrayToPrint.back()) += str.substr(start+1,end-start-1);
-					}
-					needNewLineOnNextStep= lexNextIs( ";",i+1,str );
-					//if (needNewLineOnNextStep!=0) --needNewLineOnNextStep;
+	std::ifstream fin( path );
+	char buff[400];
+	bool first_line = true;
+	while ( !fin.eof( ) ) {
+		fin.getline( buff, 400 );
+		std::string getRidOfComents = buff;
+		if ( first_line ) {
+			first_line = false;
+			if ( getRidOfComents.find( "z3" ) != std::string::npos ) {
+				auto start = getRidOfComents.find( "\"" );
+				auto str = getRidOfComents.substr( start+1, getRidOfComents.length( ) - start-1 );
+				str = str.substr( 0, str.find( "\"" ) );
+				if ( str.find( "z3" ) != std::string::npos ) {
+					z3_path = str;
 				}
 			}
 		}
+		line += getRidOfComents.substr( 0, getRidOfComents.find( "#" ) );
 	}
-	return false;
-}
-
-
-
-void forPrintPrint(Print& pr){
-	for( auto& it : pr.arrayToPrint ) {
-		std::cout << *it << std::endl;
+	fin.close( );
+	// get rid of \t and \n
+	auto size = line.size( );
+	for ( unsigned i = 0; i < size; ++i ) {
+		if ( line[i] == '\n' || line[i] == '\t' ) {
+			line[i] = ' ';
+		}
 	}
-	std::cout << std::endl;
-}
-
-
-
-int main()
-{
-	std::ifstream fin("test.code");
-	std::string code="";
-	while ( !fin.eof() ){
-		char buff[255];
-		fin.getline(buff,255);
-		code = code + buff;
+	bool afterColumn = false;
+	for ( unsigned i = 0; i < size; ++i ) {
+		if ( afterColumn ) {
+			if ( line[i] != ' ' ) {
+				afterColumn = false;
+			} else
+			{
+				line.erase( i, 1 );
+				--i;
+				size -= 1;
+			}
+		}
+		if ( line[i] == ';' || line[i] == '{' || line[i] == '}' ) {
+			afterColumn = true;
+		}
 	}
-	fin.close();
-	Print pr;
-	lexGetPrint(code, pr);
-	forPrintPrint(pr);
-	
-
-	return 0;
+	// code review;
+	// std::cout << line << std::endl;
+	// system( "pause" );
 }
