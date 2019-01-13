@@ -167,10 +167,17 @@ void check_body_sat( Body* body_st, std::map<str_t, Func>& func, CheckSAT* it, s
 		char ch = jt->getVal( );
 		switch ( ch ) {
 		case 'a': {
+			auto buff = recursionCounter[it->nameOfFunc];
 			Assert* assert_st = (Assert*)jt.get( );
-			ret += "(assert (not (= ";
+			pExpr test = getLexAND( assert_st->pi_expr );
+			ret += "(assert ";
+			ret += "(ite (not (= ";
+			recursionCounter[it->nameOfFunc] = buff;
+			special_drawExpr_forChecking( test.get( ), func, line, it->board, ret );
+			ret += " 0)) (not (= ";
 			special_drawExpr_forChecking( assert_st->expression.get( ), func, line, it->board, ret );
-			ret += " 0)))\n";
+			ret += " 0)) true))\n";
+			recursionCounter[it->nameOfFunc] = buff;
 		} break;
 		case '?': {
 			If* if_st = (If*)jt.get( );
@@ -400,15 +407,16 @@ long exe( Statement* st, std::map<str_t, Func>& func, bool& IsReturn, str_t& lin
 		recursionCounter.clear( );
 		str += "(check-sat)";
 		//std::cout << str << std::endl;
-		std::ofstream fout( "check_sat_file" , std::ios::trunc );
+		std::ofstream fout( "______check_sat_file" , std::ios::trunc );
 		fout << str;
 		fout.close( );
-		system( "z3 check_sat_file > ret" );
-		std::ifstream fin( "ret" );
+		system( "z3 ______check_sat_file > ______ret" );
+		std::ifstream fin( "______ret" );
 		fin >> str;
 		fin.close( );
-		system( ( remove_file_command + " check_sat_file" ).c_str( ) );
-		system( ( remove_file_command + " ret" ).c_str( ) );
+		system( "pause" );
+		system( ( remove_file_command + " ______check_sat_file" ).c_str( ) );
+		system( ( remove_file_command + " ______ret" ).c_str( ) );
 		std::cout << str << std::endl;
 
 	} break; // check-sat
@@ -428,12 +436,12 @@ long exe( Statement* st, std::map<str_t, Func>& func, bool& IsReturn, str_t& lin
 		recursionCounter.clear( );
 		str += "(check-sat)\n";
 		str += "(get-model)";
-		std::ofstream fout( "check_sat_and_get_model_file", std::ios::trunc );
+		std::ofstream fout( "______check_sat_and_get_model_file", std::ios::trunc );
 		fout << str;
 		fout.close( );
 		str.clear( );
-		system( "z3 check_sat_and_get_model_file > ret" );
-		std::ifstream fin( "ret" );
+		system( "z3 ______check_sat_and_get_model_file > ______ret" );
+		std::ifstream fin( "______ret" );
 		char buff[280];
 		bool first_line = true;
 		str_t printOut;
@@ -463,9 +471,9 @@ long exe( Statement* st, std::map<str_t, Func>& func, bool& IsReturn, str_t& lin
 		}
 
 		fin.close( );
-		//system( "pause" );
-		system( ( remove_file_command + " check_sat_and_get_model_file" ).c_str( ) );
-		system( ( remove_file_command + " ret" ).c_str( ) );
+		system( "pause" );
+		system( ( remove_file_command + " ______check_sat_and_get_model_file" ).c_str( ) );
+		system( ( remove_file_command + " ______ret" ).c_str( ) );
 
 
 
