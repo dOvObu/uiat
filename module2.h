@@ -23,13 +23,13 @@ vec_pAssign* all_id_of_curr_Func = nullptr;
 
 
 
-// Майнит деревья утверждений из строки
+// РњР°Р№РЅРёС‚ РґРµСЂРµРІСЊСЏ СѓС‚РІРµСЂР¶РґРµРЅРёР№ РёР· СЃС‚СЂРѕРєРё
 char lexGetTypeOfStatement(
-	str_t& str,									// анализируемая строка
-	vec_pStatement& stmt,					// вывод набора утверждений
-	vec_pAssign* all_ids,					// имена всех аргументов
-	vec_pair_pExpr_vecpExpr& ret_expr,	// варианты возвращаемых значений
-	vec_pExpr& pi_expr	/*					// текущие условия		*/ )
+	str_t& str,									// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
+	vec_pStatement& stmt,					// РІС‹РІРѕРґ РЅР°Р±РѕСЂР° СѓС‚РІРµСЂР¶РґРµРЅРёР№
+	vec_pAssign* all_ids,					// РёРјРµРЅР° РІСЃРµС… Р°СЂРіСѓРјРµРЅС‚РѕРІ
+	vec_pair_pExpr_vecpExpr& ret_expr,	// РІР°СЂРёР°РЅС‚С‹ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… Р·РЅР°С‡РµРЅРёР№
+	vec_pExpr& pi_expr	/*					// С‚РµРєСѓС‰РёРµ СѓСЃР»РѕРІРёСЏ		*/ )
 {
 	str_size_t begin1;
 	auto itBegin1 = std::begin( str ), itEnd1 = std::end( str );
@@ -72,8 +72,8 @@ char lexGetTypeOfStatement(
 	}
 	auto begin5 = str.find( ":=" );
 
-	char ch = 'E'; // предположили, что выражение
-	llexTypeOfStatementCh( str, stmt, begin1, begin2, begin3, begin4, begin4dot3, begin4dot4, begin4dot5, begin5, ch ); // узнали, что на самом деле
+	char ch = 'E'; // РїСЂРµРґРїРѕР»РѕР¶РёР»Рё, С‡С‚Рѕ РІС‹СЂР°Р¶РµРЅРёРµ
+	llexTypeOfStatementCh( str, stmt, begin1, begin2, begin3, begin4, begin4dot3, begin4dot4, begin4dot5, begin5, ch ); // СѓР·РЅР°Р»Рё, С‡С‚Рѕ РЅР° СЃР°РјРѕРј РґРµР»Рµ
 
 	switch ( ch ) {
 	case 'B': {
@@ -84,7 +84,7 @@ char lexGetTypeOfStatement(
 		str_t bod( bb, eb );
 		// 1
 		lexGetPartsOfSt( bod, std::begin( bod ), std::end( bod ), term->statement, all_ids, ret_expr, pi_expr );
-	}	break; // тело
+	}	break; // С‚РµР»Рѕ
 
 	case '?': {
 
@@ -129,9 +129,9 @@ char lexGetTypeOfStatement(
 			}
 		}
 
-		// добавляем замыкающие переменные
+		// РґРѕР±Р°РІР»СЏРµРј Р·Р°РјС‹РєР°СЋС‰РёРµ РїРµСЂРµРјРµРЅРЅС‹Рµ
 
-	}	break; // обработка "если"
+	}	break; // РѕР±СЂР°Р±РѕС‚РєР° "РµСЃР»Рё"
 
 	case ':': {
 
@@ -186,7 +186,7 @@ char lexGetTypeOfStatement(
 			}
 		}
 
-	}	break; // обработка "иначе"
+	}	break; // РѕР±СЂР°Р±РѕС‚РєР° "РёРЅР°С‡Рµ"
 
 	case 'a': {
 		Assert* term;
@@ -262,7 +262,7 @@ char lexGetTypeOfStatement(
 		
 		// special_drawExpr( term->expression.get( ) );
 
-	}	break; // утверждение
+	}	break; // СѓС‚РІРµСЂР¶РґРµРЅРёРµ
 
 	case 'r': {
 		Return* term;
@@ -289,7 +289,7 @@ char lexGetTypeOfStatement(
 			term->phi_expr.second.push_back( pi_expr[i] );
 		}
 		ret_expr.push_back( term->phi_expr );
-	}	break; // возврат из функции
+	}	break; // РІРѕР·РІСЂР°С‚ РёР· С„СѓРЅРєС†РёРё
 
 	case 'M': {
 		PrintModel* term;
@@ -313,7 +313,7 @@ char lexGetTypeOfStatement(
 			st >> term->nameOfFunc;
 		}
 
-	}	break; // получить модель
+	}	break; // РїРѕР»СѓС‡РёС‚СЊ РјРѕРґРµР»СЊ
 
 	case 't': {
 		CheckSAT* term;
@@ -342,7 +342,7 @@ char lexGetTypeOfStatement(
 			}
 		}
 
-	}	break; // проверить выполнимость
+	}	break; // РїСЂРѕРІРµСЂРёС‚СЊ РІС‹РїРѕР»РЅРёРјРѕСЃС‚СЊ
 
 	case 'P': {
 		Print* term;
@@ -461,13 +461,13 @@ char lexGetTypeOfStatement(
 
 		}
 		
-	}	break; // печать
+	}	break; // РїРµС‡Р°С‚СЊ
 
 	case '~': {
 
 		/*********************************
 		* #assign								*
-		*					ПРИСВОЕНИЕ			*
+		*					РџР РРЎР’РћР•РќРР•			*
 		*											*
 		**********************************/
 
@@ -482,7 +482,7 @@ char lexGetTypeOfStatement(
 		
 		Assign* term = nullptr;
 
-		// Если ещё не разу не встречалось такой переменной
+		// Р•СЃР»Рё РµС‰С‘ РЅРµ СЂР°Р·Сѓ РЅРµ РІСЃС‚СЂРµС‡Р°Р»РѕСЃСЊ С‚Р°РєРѕР№ РїРµСЂРµРјРµРЅРЅРѕР№
 		auto buff = std::make_pair<pExpr, vec_pExpr>(
 			lexAnalise( expr, all_ids, ret_expr, pi_expr ),
 			vec_pExpr( ) );
@@ -502,7 +502,7 @@ char lexGetTypeOfStatement(
 		pAssign sh( term = new Assign( allAssignments[name] ) );
 		//term = allAssignments[name].get( );
 
-		// если мы в if-блоке
+		// РµСЃР»Рё РјС‹ РІ if-Р±Р»РѕРєРµ
 		bool we_are_in_if_block = !pi_expr.empty( );
 		
 		term->meaning.push_back( buff );
@@ -528,11 +528,11 @@ char lexGetTypeOfStatement(
 		//std::cout << "stmt test " << stmt.back( ).get( )->getVal( );
 
 		term->name = name;
-	}	break; // присвоение
+	}	break; // РїСЂРёСЃРІРѕРµРЅРёРµ
 
 	case 'E': {
 		stmt.push_back( lexAnalise( str, all_ids, ret_expr, pi_expr ) );
-	}	break; // выражение
+	}	break; // РІС‹СЂР°Р¶РµРЅРёРµ
 	
 	default: break;
 	}
@@ -546,12 +546,12 @@ bool isNotWhiteSpace( str_t& str ) {
 	return false;
 }
 
-// Возвращает список аргументов объявления функции
+// Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє Р°СЂРіСѓРјРµРЅС‚РѕРІ РѕР±СЉСЏРІР»РµРЅРёСЏ С„СѓРЅРєС†РёРё
 void lexGetArguments(
-	str_t& str,						// анализируемая строка
-	str_it begin,					// начало '('
-	str_it end,						// конец ')'
-	vec_pAssign& args /*			// возврящаемый список аргументов	*/ )
+	str_t& str,						// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
+	str_it begin,					// РЅР°С‡Р°Р»Рѕ '('
+	str_it end,						// РєРѕРЅРµС† ')'
+	vec_pAssign& args /*			// РІРѕР·РІСЂСЏС‰Р°РµРјС‹Р№ СЃРїРёСЃРѕРє Р°СЂРіСѓРјРµРЅС‚РѕРІ	*/ )
 {
 	auto it = begin;
 	pCoreAssign sh;
@@ -586,7 +586,7 @@ void lexGetArguments(
 }
 
 
-// Находит >{ тело }<
+// РќР°С…РѕРґРёС‚ >{ С‚РµР»Рѕ }<
 void lexFindBody( str_it &begin, str_it &end )
 {
 	begin = std::find( begin, end, '{' );
@@ -594,15 +594,15 @@ void lexFindBody( str_it &begin, str_it &end )
 }
 
 
-// Ищет начала основных частей уловия
+// РС‰РµС‚ РЅР°С‡Р°Р»Р° РѕСЃРЅРѕРІРЅС‹С… С‡Р°СЃС‚РµР№ СѓР»РѕРІРёСЏ
 void lexFindIf(
-	str_t& str,			// анализируемая строка
+	str_t& str,			// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
 	str_it &begin,				//  >if
-	str_it &end,				//   тело}<
-	str_it &conditionBegin,	// >условие
-	str_it &conditionEnd,	//  условие<
-	str_it &bodyBegin,		// >{тело
-	str_it &bodyEnd	/*		//   тело}<		*/ )
+	str_it &end,				//   С‚РµР»Рѕ}<
+	str_it &conditionBegin,	// >СѓСЃР»РѕРІРёРµ
+	str_it &conditionEnd,	//  СѓСЃР»РѕРІРёРµ<
+	str_it &bodyBegin,		// >{С‚РµР»Рѕ
+	str_it &bodyEnd	/*		//   С‚РµР»Рѕ}<		*/ )
 {
 	auto pos = str.find( "if" );
 	
@@ -676,12 +676,12 @@ void lexFindIf(
 }
 
 
-// Майнит дерево выражений из заданной строки
+// РњР°Р№РЅРёС‚ РґРµСЂРµРІРѕ РІС‹СЂР°Р¶РµРЅРёР№ РёР· Р·Р°РґР°РЅРЅРѕР№ СЃС‚СЂРѕРєРё
 pExpr lexGetExpression(
-	str_t& str,									// анализируемая строка
-	vec_pAssign* all_ids,					// имена всех аргументов
-	vec_pair_pExpr_vecpExpr& ret_expr,	// варианты возвращаемых значений
-	vec_pExpr& pi_expr /*					// список деревьев утверждений */ )
+	str_t& str,									// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
+	vec_pAssign* all_ids,					// РёРјРµРЅР° РІСЃРµС… Р°СЂРіСѓРјРµРЅС‚РѕРІ
+	vec_pair_pExpr_vecpExpr& ret_expr,	// РІР°СЂРёР°РЅС‚С‹ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… Р·РЅР°С‡РµРЅРёР№
+	vec_pExpr& pi_expr /*					// СЃРїРёСЃРѕРє РґРµСЂРµРІСЊРµРІ СѓС‚РІРµСЂР¶РґРµРЅРёР№ */ )
 {
 	if ( str.size(  ) != 0 ) {
 		auto key = str.find( '(' );
@@ -703,18 +703,18 @@ pExpr lexGetExpression(
 
 
 
-// Решает что встретилось раньше: тело, условие, assert, return, или присвоение
+// Р РµС€Р°РµС‚ С‡С‚Рѕ РІСЃС‚СЂРµС‚РёР»РѕСЃСЊ СЂР°РЅСЊС€Рµ: С‚РµР»Рѕ, СѓСЃР»РѕРІРёРµ, assert, return, РёР»Рё РїСЂРёСЃРІРѕРµРЅРёРµ
 inline void llexTypeOfStatementCh(
-	str_t& str,							// анализируемая строка
-	vec_pStatement& stmt,			// список утверждений
-	str_size_t& begin1,				// точка начала тела		'{'тело'}'
-	str_size_t& begin2,				// точка начала условия	'if'условие'then' или 'else'
-	str_size_t& begin3,				// точка начала assert-а
-	str_size_t& begin4,				// точка начала return-а
-	str_size_t& begin4dot3,			// точка начала check
-	str_size_t& begin4dot4,			// точка начала show_model
-	str_size_t& begin4dot5,			// точка начала print-а
-	str_size_t& begin5,				// точка начала присвоения
+	str_t& str,							// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
+	vec_pStatement& stmt,			// СЃРїРёСЃРѕРє СѓС‚РІРµСЂР¶РґРµРЅРёР№
+	str_size_t& begin1,				// С‚РѕС‡РєР° РЅР°С‡Р°Р»Р° С‚РµР»Р°		'{'С‚РµР»Рѕ'}'
+	str_size_t& begin2,				// С‚РѕС‡РєР° РЅР°С‡Р°Р»Р° СѓСЃР»РѕРІРёСЏ	'if'СѓСЃР»РѕРІРёРµ'then' РёР»Рё 'else'
+	str_size_t& begin3,				// С‚РѕС‡РєР° РЅР°С‡Р°Р»Р° assert-Р°
+	str_size_t& begin4,				// С‚РѕС‡РєР° РЅР°С‡Р°Р»Р° return-Р°
+	str_size_t& begin4dot3,			// С‚РѕС‡РєР° РЅР°С‡Р°Р»Р° check
+	str_size_t& begin4dot4,			// С‚РѕС‡РєР° РЅР°С‡Р°Р»Р° show_model
+	str_size_t& begin4dot5,			// С‚РѕС‡РєР° РЅР°С‡Р°Р»Р° print-Р°
+	str_size_t& begin5,				// С‚РѕС‡РєР° РЅР°С‡Р°Р»Р° РїСЂРёСЃРІРѕРµРЅРёСЏ
 	char& return_ch )
 {
 	auto min = begin1;
@@ -738,15 +738,15 @@ inline void llexTypeOfStatementCh(
 
 
 
-// Разделяет в тексте тела на деревья утверждений
+// Р Р°Р·РґРµР»СЏРµС‚ РІ С‚РµРєСЃС‚Рµ С‚РµР»Р° РЅР° РґРµСЂРµРІСЊСЏ СѓС‚РІРµСЂР¶РґРµРЅРёР№
 void lexGetPartsOfSt(
-	str_t& str,									// анализируемая строка 
-	str_it begin,									// начало анализируемого фрагмента '{'
-	str_it end,										// конец анализируемого	фрагмента	 '}'
-	vec_pStatement& stmt,					// список утверждений
-	vec_pAssign* all_ids,					// имена всех аргументов
-	vec_pair_pExpr_vecpExpr& ret_expr,	// варианты возвращаемых значений
-	vec_pExpr& pi_expr	/*					// текущие условия			*/ )
+	str_t& str,									// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР° 
+	str_it begin,									// РЅР°С‡Р°Р»Рѕ Р°РЅР°Р»РёР·РёСЂСѓРµРјРѕРіРѕ С„СЂР°РіРјРµРЅС‚Р° '{'
+	str_it end,										// РєРѕРЅРµС† Р°РЅР°Р»РёР·РёСЂСѓРµРјРѕРіРѕ	С„СЂР°РіРјРµРЅС‚Р°	 '}'
+	vec_pStatement& stmt,					// СЃРїРёСЃРѕРє СѓС‚РІРµСЂР¶РґРµРЅРёР№
+	vec_pAssign* all_ids,					// РёРјРµРЅР° РІСЃРµС… Р°СЂРіСѓРјРµРЅС‚РѕРІ
+	vec_pair_pExpr_vecpExpr& ret_expr,	// РІР°СЂРёР°РЅС‚С‹ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… Р·РЅР°С‡РµРЅРёР№
+	vec_pExpr& pi_expr	/*					// С‚РµРєСѓС‰РёРµ СѓСЃР»РѕРІРёСЏ			*/ )
 {
 	auto it = begin + 1;
 	--end;
@@ -765,7 +765,7 @@ void lexGetPartsOfSt(
 			//std::cout << "set: " << str2 << std::endl;
 			char chhhh = lexGetTypeOfStatement( str2, stmt, all_ids, ret_expr, pi_expr );
 			//std::cout << "was type: " << chhhh << std::endl;
-			if ( chhhh == 'r' ) { // тело, после return-а исполняться не может
+			if ( chhhh == 'r' ) { // С‚РµР»Рѕ, РїРѕСЃР»Рµ return-Р° РёСЃРїРѕР»РЅСЏС‚СЊСЃСЏ РЅРµ РјРѕР¶РµС‚
 				break;
 			}
 			begin = it;
@@ -778,7 +778,7 @@ void lexGetPartsOfSt(
 
 
 
-// Проверяет наличие символа справа не обращая внимания на white space
+// РџСЂРѕРІРµСЂСЏРµС‚ РЅР°Р»РёС‡РёРµ СЃРёРјРІРѕР»Р° СЃРїСЂР°РІР° РЅРµ РѕР±СЂР°С‰Р°СЏ РІРЅРёРјР°РЅРёСЏ РЅР° white space
 bool leftward(str_t& str, str_size_t start, char ch )
 {
 	--start;
@@ -793,7 +793,7 @@ bool leftward(str_t& str, str_size_t start, char ch )
 
 
 
-// Переводит сокращение elif ... then{} в else { if ... then {} }
+// РџРµСЂРµРІРѕРґРёС‚ СЃРѕРєСЂР°С‰РµРЅРёРµ elif ... then{} РІ else { if ... then {} }
 void elifToElseIf( str_t& str )
 {
 	str_t target = "elif";
@@ -814,10 +814,10 @@ void elifToElseIf( str_t& str )
 
 
 
-// Майнит функции из текста
+// РњР°Р№РЅРёС‚ С„СѓРЅРєС†РёРё РёР· С‚РµРєСЃС‚Р°
 void takeFuncDecls(
-	str_t term,							// анализируемая строка
-	std::map<str_t,Func>& func 	/* множество функций, доступных для вызова*/ )
+	str_t term,							// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
+	std::map<str_t,Func>& func 	/* РјРЅРѕР¶РµСЃС‚РІРѕ С„СѓРЅРєС†РёР№, РґРѕСЃС‚СѓРїРЅС‹С… РґР»СЏ РІС‹Р·РѕРІР°*/ )
 {
 	//std::cout << term << std::endl;
 	//std::cout << std::endl;
@@ -855,14 +855,14 @@ void takeFuncDecls(
 		for ( pAssign& it : func[name.c_str( )].id ) {
 			it->if_expr.push_back(false);
 			it->active = false;
-			it->meaning.push_back( std::make_pair<pExpr, vec_pExpr>( pExpr( new Brackets( ) ), vec_pExpr( ) ) ); // очередной костыль
+			it->meaning.push_back( std::make_pair<pExpr, vec_pExpr>( pExpr( new Brackets( ) ), vec_pExpr( ) ) ); // РѕС‡РµСЂРµРґРЅРѕР№ РєРѕСЃС‚С‹Р»СЊ
 			( (Brackets*)it->meaning.back( ).first.get( ) )->expresson = pExpr( (Expr*)it.get( ), []( auto i ) {} );
 			//std::cout << name << "   " << it->name << std::endl;
 			// system( "pause" );
 			allAssignments[it->name] = it->core;//*/
 		}
 
-		vec_pExpr pi_expr; // список текущих условий
+		vec_pExpr pi_expr; // СЃРїРёСЃРѕРє С‚РµРєСѓС‰РёС… СѓСЃР»РѕРІРёР№
 		vec_pair_pExpr_vecpExpr ret_expr;
 		all_id_of_curr_Func = &( func[name.c_str( )].id );
 		lexGetPartsOfSt( term, rbrOpener, rbrCloser, func[name.c_str(  )].body.statement, all_id_of_curr_Func, ret_expr, pi_expr );
@@ -890,11 +890,11 @@ void takeFuncDecls(
 }
 
 
-// Майнит функцию из текста
+// РњР°Р№РЅРёС‚ С„СѓРЅРєС†РёСЋ РёР· С‚РµРєСЃС‚Р°
 void takeFuncDecl(
-	str_t term,					// анализируемая строка
-	str_t& nameOfFunc,		// имя искомой функции
-	Func& ret 				/*	// заполняемая функция [инициализацию производите снаружи :) ]*/ )
+	str_t term,					// Р°РЅР°Р»РёР·РёСЂСѓРµРјР°СЏ СЃС‚СЂРѕРєР°
+	str_t& nameOfFunc,		// РёРјСЏ РёСЃРєРѕРјРѕР№ С„СѓРЅРєС†РёРё
+	Func& ret 				/*	// Р·Р°РїРѕР»РЅСЏРµРјР°СЏ С„СѓРЅРєС†РёСЏ [РёРЅРёС†РёР°Р»РёР·Р°С†РёСЋ РїСЂРѕРёР·РІРѕРґРёС‚Рµ СЃРЅР°СЂСѓР¶Рё :) ]*/ )
 {
 	//str_t keyWord = "Func ";
 	//std::vector<unsigned> fidPos;
@@ -960,14 +960,14 @@ void takeFuncDecl(
 				for ( pAssign& it : ret.id ) {
 					it->if_expr.push_back( false );
 					it->active = false;
-					it->meaning.push_back( std::make_pair<pExpr, vec_pExpr>( pExpr( new Brackets( ) ), vec_pExpr( ) ) ); // очередной костыль
+					it->meaning.push_back( std::make_pair<pExpr, vec_pExpr>( pExpr( new Brackets( ) ), vec_pExpr( ) ) ); // РѕС‡РµСЂРµРґРЅРѕР№ РєРѕСЃС‚С‹Р»СЊ
 					( (Brackets*)it->meaning.back( ).first.get( ) )->expresson = pExpr( (Expr*)it.get( ), []( auto i ) {} );
 					//std::cout << name << "   " << it->name << std::endl;
 					// system( "pause" );
 					allAssignments[it->name] = it->core;//*/
 				}
 
-				vec_pExpr pi_expr; // список текущих условий
+				vec_pExpr pi_expr; // СЃРїРёСЃРѕРє С‚РµРєСѓС‰РёС… СѓСЃР»РѕРІРёР№
 				vec_pair_pExpr_vecpExpr ret_expr;
 				all_id_of_curr_Func = &( ret.id );
 				lexGetPartsOfSt( term, rbrOpener, rbrCloser, ret.body.statement, all_id_of_curr_Func, ret_expr, pi_expr );
