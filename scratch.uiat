@@ -1,24 +1,5 @@
-# This line may contain path and command to execute z3. By default it uses -> "z3" <- this. Feel free to add comments around it.
+# This line may contain path and command to execute z3. By default it uses -> "z3" <- this)
 
-# By default, entrypoint is here, in main function
-Func main(  )
-{
-	show_model( contro );
-	show_model( ariph );
-	check( demorgan );
-	check( СЂР°Р·РЅРёС†Р° );
-	show_model( СЂР°Р·РЅРёС†Р° );
-	check( foo );
-	show_model( firstSlide );
-
-	print{
-		;"С„Р°РєС‚РѕСЂРёР°Р»: " factorial(3);
-		"somebody once told me";
-		"the world is gonna roll me";
-		"Р°Р№ СЌР№РЅС‚ С€Р°СЂРїРµСЃС‚ С‚СѓР» РёРЅ Р·СЌ С€СЌСЌСЌРґ";
-		"pow(2, 10) ~ " pow(2, 10);
-	};
-}
 
 Func factorial( n )
 {
@@ -56,7 +37,7 @@ Func pow( n, n2 )
 
 
 
-Func СЂР°Р·РЅРёС†Р°( arg1, arg2 )
+Func разница( arg1, arg2 )
 {
 	ret := 0;
 	if arg1 > arg2 then
@@ -118,6 +99,24 @@ Func firstSlide(circle, rectangle, triangle)
 	};
 }
 
+Func main(  )
+{
+	show_model( contro );
+	show_model( ariph );
+	check( demorgan );
+	check( разница );
+	show_model( разница );
+	check( foo );
+	show_model( firstSlide );
+
+	print{
+		;"факториал: " factorial(3);
+		"somebody once told me";
+		"the world is gonna roll me";
+		"ай эйнт шарпест тул ин зэ шэээд";
+		"pow(2, 10) ~ " pow(2, 10);
+	};
+}
 
 Func foo( arg1, arg2 )
 {

@@ -49,7 +49,30 @@ long symExec( Expr* ex, std::map<str_t, Func>& func, str_t& line )
 	} break;
 	case 'c': {
 		if ( func.count( ( (Call*)ex )->nameOfFunc ) != 0 )
-		{	
+		{
+			/*if ( ( (Call*)ex )->nameOfFunc != "factorial" )
+			{
+				vec_pExpr buff;
+				for ( auto& it : func[( (Call*)ex )->nameOfFunc].id ) {
+					buff.push_back( ( (Brackets*)it->meaning[0].first.get( ) )->expresson );
+				}
+				unsigned i = 0;
+				for ( auto& it : ( (Call*)ex )->args )
+				{
+					( (Brackets*)func[( (Call*)ex )->nameOfFunc].id[i]->meaning[0].first.get( ) )->expresson = it;
+					++i;
+				}
+				long data = symExec( func[( (Call*)ex )->nameOfFunc].return_expression_monolit.get( ), func, line );
+				i = 0;
+				for ( auto& it : buff )
+				{
+					( (Brackets*)func[( (Call*)ex )->nameOfFunc].id[i]->meaning[0].first.get( ) )->expresson = it;
+					++i;
+				}
+				return data;
+			}
+			else {*/
+			
 			if ( recursionCounter.count( ( (Call*)ex )->nameOfFunc ) == 0 ) { recursionCounter[( (Call*)ex )->nameOfFunc] = 0; }
 			else { ++recursionCounter[( (Call*)ex )->nameOfFunc]; }
 

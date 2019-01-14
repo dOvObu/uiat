@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <map>
 #include "module_1.h"
+#include "module_2.h"
 
 void loadCode( const char path[], std::string& line );
 
@@ -17,7 +18,12 @@ int main( int argc, char* argv[] )
 	setlocale( LC_ALL, "" );
 	system( "echo \"(^_^)\" > errorLog.txt" );
 	std::map< std::string, Func > func;
+
+	//int val = 42;
+	//std::cout << "My test: " << (int)(!( 0 == 0 )) << std::endl;
+	
 	std::string line = "";
+
 	std::string codePath = "scratch.uiat";
 	if ( argc > 1 ) {
 		if ( str_t( argv[1] ).find( ".uiat" ) != str_t::npos ) {
@@ -26,9 +32,13 @@ int main( int argc, char* argv[] )
 	}
 	loadCode( codePath.c_str(), line );
 	elifToElseIf( line );
+
+	//std::cout << line << std::endl;
+	//ssa( line );
+	//std::cout << line << std::endl;
 	takeFuncDecls( line, func );
 
-	execFunc( "main", func, line );
+	execFunc( "main", func, line );//*/
 
 	system( "pause" );
 	return 0;
@@ -81,4 +91,7 @@ void loadCode( const char path[], std::string& line )
 			afterColumn = true;
 		}
 	}
+	// code review;
+	// std::cout << line << std::endl;
+	// system( "pause" );
 }

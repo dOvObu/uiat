@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <iterator>
 
-/*		РџРѕСЂСЏРґРѕРє РѕР±СЉСЏРІР»РµРЅРёСЏ
+/*		Порядок объявления
 	class Term;
 	class Fid: public Term;
 	class Id: public Term;
@@ -146,13 +146,13 @@ typedef std::vector<Id> vec_Id;
 typedef std::vector< std::shared_ptr<Id> > vec_pId;
 
 
-class CoreAssign : public Statement // С…СЂР°РЅРёС‚СЃСЏ РІ РјР°РїРµ allAssignments Рё СѓР·Р»Р°С… РґРµСЂРµРІР°
+class CoreAssign : public Statement // хранится в мапе allAssignments и узлах дерева
 {
 public:
 	bool active = true;
 	std::vector<bool> if_expr;
 	std::string name = "";
-	// СЃРїРёСЃРѕРє	<	РїР°СЂ	<РІС‹СЂР°Р¶РµРЅРёРµ, СЃРїРёСЃРѕРє_СѓСЃР»РѕРІРёР№> >
+	// список	<	пар	<выражение, список_условий> >
 	vec_pair_pExpr_vecpExpr meaning;
 	CoreAssign( ) { this->val = ':'; }
 	CoreAssign( const char _name_[] ):name(_name_), active(false) { this->val = ':'; }
@@ -160,7 +160,7 @@ public:
 };
 typedef std::shared_ptr<CoreAssign> pCoreAssign;
 
-class Assign : public Statement // С…СЂР°РЅРёС‚СЃСЏ С‚РѕР»СЊРєРѕ РІ СѓР·Р»Р°С… РґРµСЂРµРІР°
+class Assign : public Statement // хранится только в узлах дерева
 {
 public:
 	bool& active;
@@ -470,14 +470,14 @@ typedef std::shared_ptr<If> pIf;
 
 
 
-// >>>РЎР°РјС‹Рµ РёРЅС‚РµСЂРµСЃРЅС‹Рµ С€С‚СѓРєРё<<<
+// >>>Самые интересные штуки<<<
 
-// CРїРѕСЃРѕР±С‹ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ:
-// return a + 3 + arg1; # СЂРѕРІРЅРѕ РѕРґРёРЅ СЂР°Р·, РІ РєРѕРЅС†Рµ С„СѓРЅРєС†РёРё
+// Cпособы использования:
+// return a + 3 + arg1; # ровно один раз, в конце функции
 class Return : public Statement
 {
 public:
-	pair_pExpr_vecpExpr phi_expr; // РІРѕР·РІСЂР°С‰Р°РµРјРѕРµ pExpr Рё "Р±Р»РѕРє СѓСЃР»РѕРІРёР№"
+	pair_pExpr_vecpExpr phi_expr; // возвращаемое pExpr и "блок условий"
 	Return( ) { this->val = 'r'; }
 	~Return( ) {}
 };
@@ -486,23 +486,23 @@ typedef std::vector<Return> vec_Return;
 typedef std::vector<pReturn> vec_pReturn;
 
 
-// CРїРѕСЃРѕР±С‹ РїСЂРёРјРµРЅРµРЅРёСЏ:
-// print "Р°";
-// print "Р±" a + 20 + foo( b, c ) "РІ" foo( d );
-// print("Рі");
+// Cпособы применения:
+// print "а";
+// print "б" a + 20 + foo( b, c ) "в" foo( d );
+// print("г");
 // print
 // {
-//		"Рґ";
-//		"Рµ" a + 20 + foo( b, c ) "С‘" foo( d );
-//		"Р¶";
+//		"д";
+//		"е" a + 20 + foo( b, c ) "ё" foo( d );
+//		"ж";
 // };
-// РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚:
-// Р°
-// Р±42РІ24
-// Рі
-// Рґ
-// Рµ42С‘24
-// Р¶
+// Ожидаемый результат:
+// а
+// б42в24
+// г
+// д
+// е42ё24
+// ж
 class Print : public Statement
 {
 public:
@@ -515,7 +515,7 @@ public:
 typedef std::shared_ptr<Print> pPrint;
 
 
-// РЎРїРѕСЃРѕСЃР±С‹ РїСЂРёРјРµРЅРµРЅРёСЏ:
+// Спососбы применения:
 // assert 1 != 2;
 // assert(a > 3);
 // assert{
@@ -530,23 +530,23 @@ class Assert : public Statement
 {
 public:
 	pExpr expression;
-	vec_pExpr pi_expr; // С‚РµРєСѓС‰РёРµ РґР»СЏ assert-Р° СѓСЃР»РѕРІРёСЏ
+	vec_pExpr pi_expr; // текущие для assert-а условия
 	Assert( ) { this->val = 'a'; }
 	~Assert( ) {}
 };
 typedef std::shared_ptr<Assert> pAssert;
 
 
-// РЎРїРѕСЃРѕР±С‹ РїСЂРёРјРµРЅРµРЅРёСЏ:
+// Способы применения:
 // Func sum(arg1, arg2, arg3)
 // {
 //		a := arg1 + arg2 + arg3;
-//		return 0; # РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ, С…РѕС‚СЏ-Р±С‹ РѕРґРёРЅ СЂР°Р·
+//		return 0; # обязательно, хотя-бы один раз
 // }
 class Func : public Term
 {
 public:
-	vec_pAssign id; // СЃРїРёСЃРѕРє Р°СЂРіСѓРјРµРЅС‚РѕРІ
+	vec_pAssign id; // список аргументов
 	Body body;
 	vec_pExpr return_expression;
 	pExpr return_expression_monolit;
@@ -556,11 +556,11 @@ public:
 typedef std::shared_ptr<Func> pFunc;
 
 
-// РЎРїРѕСЃРѕР±С‹ РїСЂРёРјРµРЅРµРЅРёСЏ:
+// Способы применения:
 // check( recursiveFoo, 9999999 );
 // check( foo );
 //
-// РћР¶РёРґР°РµРјС‹Р№ РІС‹РІРѕРґ:
+// Ожидаемый вывод:
 // unsat
 // sat
 class CheckSAT : public Statement
@@ -573,11 +573,11 @@ public:
 };
 
 
-// РЎРїРѕСЃРѕР±С‹ РїСЂРёРјРµРЅРµРЅРёСЏ:
+// Способы применения:
 // show_model( recursiveFoo, 999999 );
 // show_model( foo );
 //
-// РћР¶РёРґР°РµРјС‹Р№ РІС‹РІРѕРґ:
+// Ожидаемый вывод:
 // unknown
 // a := 10; b := 20; print( foo(a, b) );
 class PrintModel : public Statement
@@ -593,7 +593,7 @@ public:
 
 
 
-// РЎРѕРєСЂР°С‰РµРЅРёСЏ РґР»СЏ С‚РёРїРѕРІ РґР°РЅРЅС‹С…
+// Сокращения для типов данных
 typedef std::string::iterator str_it;
 typedef std::string::reverse_iterator str_rev_it;
 typedef std::string::size_type str_size_t;
@@ -605,7 +605,7 @@ typedef std::vector<std::vector<std::string> > vec_vec_str_t;
 
 
 std::map<str_t, pCoreAssign> allAssignments;
-str_t marker = "___________Р¶РѕРїР°____"; // РёРґРё СЃРІРѕРµР№ РґРѕСЂРѕРіРѕР№, СЃС‚Р°Р»РєРµСЂ
+str_t marker = "_________жопа___";
 
 
 void getLastMatch( std::map<str_t, unsigned>& lastMatch )
@@ -824,19 +824,19 @@ unsigned leastDeepCondition( vec_pair_pExpr_vecpExpr& vec )
 }
 
 
-// РџРѕСЂСЏРґРѕРє РѕР±СЉСЏРІР»РµРЅРёСЏ РІ module2.h:
-pExpr	lexAnalise( str_t str, vec_pAssign* all_ids, vec_pair_pExpr_vecpExpr& ret_expr, vec_pExpr& pi_expr ); // РћР±СЉСЏРІР»РµРЅРёРµ РґР»СЏ СЂРµРєСѓСЂСЃРёРІРЅРѕРіРѕ РІС‹Р·РѕРІР°
+// Порядок объявления в module2.h:
+pExpr	lexAnalise( str_t str, vec_pAssign* all_ids, vec_pair_pExpr_vecpExpr& ret_expr, vec_pExpr& pi_expr ); // Объявление для рекурсивного вызова
 void	lexGetArguments( str_t& str, str_it begin, str_it end, vec_pAssign& args );
 void	lexFindBody( str_it &begin, str_it &end );
 void	lexFindIf( str_t& str, str_it &begin, str_it &end, str_it &conditionBegin, str_it &conditionEnd, str_it &bodyBegin, str_it &bodyEnd );
 pExpr	lexGetExpression( str_t& str, vec_pAssign* all_ids, vec_pair_pExpr_vecpExpr& ret_expr, vec_pExpr& pi_expr );
-void	lexGetPartsOfSt( str_t& str, str_it begin, str_it end, vec_pStatement& args, vec_pAssign* all_ids, vec_pair_pExpr_vecpExpr& ret_expr, vec_pExpr& pi_expr ); // РћР±СЉСЏРІР»РµРЅРёРµ РґР»СЏ СЂРµРєСѓСЂСЃРёРІРЅРѕРіРѕ РІС‹Р·РѕРІР°
+void	lexGetPartsOfSt( str_t& str, str_it begin, str_it end, vec_pStatement& args, vec_pAssign* all_ids, vec_pair_pExpr_vecpExpr& ret_expr, vec_pExpr& pi_expr ); // Объявление для рекурсивного вызова
 inline void llexTypeOfStatementCh( str_t& str, vec_pStatement& stmt, str_size_t& begin1, str_size_t& begin2, str_size_t& begin3, str_size_t& begin4, str_size_t& begin4dot3, str_size_t& begin4dot4, str_size_t& begin4dot5, str_size_t& begin5, char& return_ch );
 char	lexGetTypeOfStatement( str_t& str, vec_pStatement& stmt, vec_pAssign* all_ids, vec_pair_pExpr_vecpExpr& ret_expr, vec_pExpr& pi_expr );
 void	lexGetPartsOfSt( str_t& str, str_it begin, str_it end, vec_pStatement& stmt, vec_pAssign* all_ids, vec_pair_pExpr_vecpExpr& ret_expr, vec_pExpr& pi_expr );
 void	takeFuncDecls( str_t term, std::map<str_t, Func>& func );
 
-// РџРѕСЂСЏРґРѕРє РѕР±СЉСЏРІР»РµРЅРёСЏ РІ module1.h:
+// Порядок объявления в module1.h:
 void lexStringWithBracketsToStrangeTree( str_t& str, vec_vec_str_t& tr );
 void lexCangeBracketsOfFunctions( str_t& str, char opener, char closer );
 void lexReplaseChByStr( str_t& str, char ch, str_t&& str2 );
@@ -845,7 +845,7 @@ pExpr anal( str_t&& str, vec_vec_str_t& tr, vec_pAssign* all_ids, vec_pair_pExpr
 pExpr deleteZeros( pExpr expr );
 pExpr lexAnalise( str_t str, vec_pAssign* all_ids, vec_pair_pExpr_vecpExpr& ret_expr, vec_pExpr& pi_expr );
 
-// РІ module_1.h
+// в module_1.h
 void check_body_sat( Body* body_st, std::map<str_t, Func>& func, CheckSAT* it, str_t& line, str_t& str );
 
 
