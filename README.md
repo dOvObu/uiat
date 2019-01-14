@@ -12,7 +12,7 @@ https://github.com/Z3Prover/z3
 ```
 https://cloud.mail.ru/public/Fuuf/KqWdbC5C5
 ```
-### build with linux
+### build with linux (currently doesn't work)
 ```
 git clone https://github.com/mOgOm/uiat.git; cd uiat; make uiat
 ```
