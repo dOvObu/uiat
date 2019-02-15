@@ -1,7 +1,6 @@
 # uiat
 unforecasted intervolute alamo tree
 is a little simple interpreter that was made for learning perpouses.
-<img src="https://i.imgur.com/NtrpQWs.jpg" style="width: 15%; height: 15%" alt="old alamo tree">
 
 ## dependencies
 ```
